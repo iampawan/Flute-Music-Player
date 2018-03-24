@@ -27,7 +27,7 @@ First Open Source Flutter based material design music player with audio plugin t
 
 ### Screenshots
 
-<img src="flutey.gif" height="300em" /> <img src="flute1.png" height="300em" /> <img src="flute2.png.gif" height="300em" /> <img src="flute3.png" height="300em" /> <img src="flute4.png" height="300em" /><img src="flute5.png" height="300em" />
+<img src="flutey.gif" height="300em" /> <img src="flute1.png" height="300em" /> <img src="flute2.png" height="300em" /> <img src="flute3.png" height="300em" /> <img src="flute4.png" height="300em" /><img src="flute5.png" height="300em" />
 
 ## Usage
 
