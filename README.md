@@ -29,7 +29,7 @@ First Open Source Flutter based material design music player with audio plugin t
 
 ## Music Player Development Project
 
-[Flute Music Player](https://github.com/iampawan/Flutter-Music-Player)
+[Flutter Beautiful Music Player](https://github.com/iampawan/Flutter-Music-Player)
 
 ### Screenshots
 
