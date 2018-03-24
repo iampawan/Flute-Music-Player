@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flute_music_player/music_finder.dart';
+import 'package:flute_music_player/flute_music_player.dart';
 
 class AlbumUI extends StatefulWidget {
   final Song song;

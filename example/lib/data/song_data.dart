@@ -1,4 +1,4 @@
-import 'package:flute_music_player/music_finder.dart';
+import 'package:flute_music_player/flute_music_player.dart';
 import 'dart:math';
 
 class SongData {

@@ -6,7 +6,7 @@ import 'package:flute_example/widgets/mp_blur_filter.dart';
 import 'package:flute_example/widgets/mp_blur_widget.dart';
 import 'package:flute_example/widgets/mp_control_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flute_music_player/music_finder.dart';
+import 'package:flute_music_player/flute_music_player.dart';
 
 enum PlayerState { stopped, playing, paused }
 
