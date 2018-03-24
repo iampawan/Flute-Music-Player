@@ -82,12 +82,11 @@
       <excludeFolder url="file://$MODULE_DIR$/example/ios/Runner/Base.lproj/packages" />
       <excludeFolder url="file://$MODULE_DIR$/example/ios/Runner/packages" />
       <excludeFolder url="file://$MODULE_DIR$/example/ios/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/example/lib/data/packages" />
       <excludeFolder url="file://$MODULE_DIR$/example/lib/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/example/lib/pages/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/example/lib/utils/packages" />
-      <excludeFolder url="file://$MODULE_DIR$/example/lib/widgets/packages" />
       <excludeFolder url="file://$MODULE_DIR$/example/packages" />
+      <excludeFolder url="file://$MODULE_DIR$/flute_music/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flute_music/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flute_music/packages" />
       <excludeFolder url="file://$MODULE_DIR$/packages" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

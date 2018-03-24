@@ -1,4 +1,4 @@
-name: flute_sample
+name: flute_demo
 description: Demonstrates how to use the flute_music_player plugin.
 
 dependencies:
