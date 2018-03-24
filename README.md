@@ -1,4 +1,4 @@
-# Flute Music Player
+# Flute Music Player Plugin Only
 
 First Open Source Flutter based material design music player with audio plugin to play local music files.(Online Radio will be added soon.)
 
@@ -25,13 +25,19 @@ First Open Source Flutter based material design music player with audio plugin t
 
 ### Show some :heart: and star the repo to support the project
 
+* Please note this is a plugin only. Actual project's link is below
+
+## Music Player Development Project
+
+[Flute Music Player](https://github.com/iampawan/Flutter-Music-Player)
+
 ### Screenshots
 
 <img src="flutey.gif" height="300em" /> <img src="flute1.png" height="300em" /> <img src="flute2.png" height="300em" /> <img src="flute3.png" height="300em" /> <img src="flute4.png" height="300em" /><img src="flute5.png" height="300em" />
 
 ## Usage
 
-[Example](https://github.com/iampawan/Flute-Music-Player/blob/master/example/lib)
+[Example](https://github.com/iampawan/Flute-Music-Player/blob/master/example/lib/main.dart)
 
 To use this plugin :
 
