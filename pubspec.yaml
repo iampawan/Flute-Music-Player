@@ -2,7 +2,7 @@ name: flute_music_player
 description: A new flutter music player with audio plugin.
 version: 0.0.1
 author: Pawan Kumar
-homepage:
+homepage: https://github.com/iampawan/Flute-Music-Player
 
 dependencies:
   flutter:

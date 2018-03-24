@@ -1,3 +1,5 @@
-## [0.0.1] - TODO: Add release date.
+## [0.0.1] - Alpha Release
 
-* TODO: Describe initial release.
+* Beautiful Music Player with all basic functionalities.
+* Minor Bugs
+* Only Android support as of now.
