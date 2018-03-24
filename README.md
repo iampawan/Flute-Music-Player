@@ -126,9 +126,9 @@ audioPlayer.setErrorHandler((msg) {
 
 ## iOS
 
-### ~~:alert: iOS implementation~~
+### Alert: iOS implementation
 
-~~this plugin is not implemented for ios yet.So wait for it or if you can contribute then please do help.~
+This project is not implemented for ios yet.So wait for it or if you can contribute then please do help.
 
 # Pull Requests
 
