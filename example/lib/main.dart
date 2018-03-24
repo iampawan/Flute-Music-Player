@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:flute_music_player/flute_music_player.dart';
 
 typedef void OnError(Exception exception);
@@ -10,7 +9,6 @@ const kUrl = "Any Url Here !";
 void main() {
   runApp(new MaterialApp(home: new Scaffold(body: new AudioApp())));
 }
-
 
 enum PlayerState { stopped, playing, paused }
 
@@ -50,12 +48,12 @@ class _AudioAppState extends State<AudioApp> {
     var songs = MusicFinder.allSongs();
 
     audioPlayer.setDurationHandler((d) => setState(() {
-      duration = d;
-    }));
+          duration = d;
+        }));
 
     audioPlayer.setPositionHandler((p) => setState(() {
-      position = p;
-    }));
+          position = p;
+        }));
 
     audioPlayer.setCompletionHandler(() {
       onComplete();
@@ -186,11 +184,11 @@ class _AudioAppState extends State<AudioApp> {
         duration == null
             ? new Container()
             : new Slider(
-            value: position?.inMilliseconds?.toDouble() ?? 0,
-            onChanged: (double value) =>
-                audioPlayer.seek((value / 1000).roundToDouble()),
-            min: 0.0,
-            max: duration.inMilliseconds.toDouble()),
+                value: position?.inMilliseconds?.toDouble() ?? 0,
+                onChanged: (double value) =>
+                    audioPlayer.seek((value / 1000).roundToDouble()),
+                min: 0.0,
+                max: duration.inMilliseconds.toDouble()),
         new Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -214,7 +212,7 @@ class _AudioAppState extends State<AudioApp> {
                 new CircularProgressIndicator(
                   value: position != null && position.inMilliseconds > 0
                       ? (position?.inMilliseconds?.toDouble() ?? 0.0) /
-                      (duration?.inMilliseconds?.toDouble() ?? 0.0)
+                          (duration?.inMilliseconds?.toDouble() ?? 0.0)
                       : 0.0,
                   valueColor: new AlwaysStoppedAnimation(Colors.cyan),
                   backgroundColor: Colors.yellow,
