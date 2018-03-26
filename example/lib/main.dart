@@ -43,9 +43,9 @@ class _AudioAppState extends State<AudioApp> {
     initAudioPlayer();
   }
 
-  void initAudioPlayer() {
+  Future initAudioPlayer() async {
     audioPlayer = new MusicFinder();
-    var songs = MusicFinder.allSongs();
+    var songs = await MusicFinder.allSongs();
 
     audioPlayer.setDurationHandler((d) => setState(() {
           duration = d;
@@ -68,6 +68,10 @@ class _AudioAppState extends State<AudioApp> {
         duration = new Duration(seconds: 0);
         position = new Duration(seconds: 0);
       });
+    });
+
+    setState((){
+      print(songs.toString());
     });
   }
 
@@ -117,15 +121,15 @@ class _AudioAppState extends State<AudioApp> {
     audioPlayer.stop();
   }
 
-  Future<Uint8List> _loadFileBytes(String url, {OnError onError}) async {
-    Uint8List bytes;
-    try {
-      bytes = await readBytes(url);
-    } on ClientException {
-      rethrow;
-    }
-    return bytes;
-  }
+//  Future<Uint8List> _loadFileBytes(String url, {OnError onError}) async {
+//    Uint8List bytes;
+//    try {
+//      bytes = await readBytes(url);
+//    } on ClientException {
+//      rethrow;
+//    }
+//    return bytes;
+//  }
 
   @override
   Widget build(BuildContext context) {

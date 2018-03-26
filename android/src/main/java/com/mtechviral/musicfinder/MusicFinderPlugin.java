@@ -169,7 +169,7 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
         String permission = permissions[i];
         int grantResult = grantResults[i];
 
-        if (permission.equals(Manifest.permission.CAMERA)) {
+        if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
           if (grantResult == PackageManager.PERMISSION_GRANTED) {
             if (executeAfterPermissionGranted) {
               pendingResult.success(getData());
