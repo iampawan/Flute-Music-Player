@@ -18,8 +18,7 @@ flutter:
     pluginClass: MusicFinderPlugin
 
 environment:
-  sdk: ">=1.23.0 <2.0.0"
-  flutter: "^0.1.2"
+  sdk: ">=2.0.0-dev.28.0 <3.0.0"
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

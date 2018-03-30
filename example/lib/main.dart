@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flute_music_player/flute_music_player.dart';
 
@@ -70,7 +69,7 @@ class _AudioAppState extends State<AudioApp> {
       });
     });
 
-    setState((){
+    setState(() {
       print(songs.toString());
     });
   }
