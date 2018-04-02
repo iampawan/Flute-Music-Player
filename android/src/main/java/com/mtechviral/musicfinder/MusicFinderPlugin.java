@@ -29,7 +29,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /**
  * MusicFinderPlugin
  */
-public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionResultListener {
+public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
   private final MethodChannel channel;
 
   private static final int REQUEST_CODE_STORAGE_PERMISSION = 3777;
@@ -53,7 +53,7 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "music_finder");
     instance = new MusicFinderPlugin(registrar.activity(), channel);
-    registrar.addRequestPermissionResultListener(instance);
+    registrar.addRequestPermissionsResultListener(instance);
     channel.setMethodCallHandler(instance);
 
   }
@@ -163,7 +163,7 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
   }
 
   @Override
-  public boolean onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+  public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
     if (requestCode == REQUEST_CODE_STORAGE_PERMISSION) {
       for (int i = 0; i < permissions.length; i++) {
         String permission = permissions[i];
