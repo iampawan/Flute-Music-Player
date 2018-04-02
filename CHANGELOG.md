@@ -1,3 +1,7 @@
+## [0.0.5] - Release
+
+* run bug fixed due to change off spelling word permission's' in new flutter version.
+
 ## [0.0.4] - Release
 
 * Pub Bug Fixed.
