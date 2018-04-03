@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 typedef void TimeChangeHandler(Duration duration);
 typedef void ErrorHandler(String message);
@@ -68,13 +69,20 @@ class MusicFinder {
   static Future<String> get platformVersion =>
       _channel.invokeMethod('getPlatformVersion');
 
-  static Future<Iterable<Song>> allSongs() async {
+  static Future<dynamic> allSongs() async {
+    var completer = new Completer();
+
+    // At some time you need to complete the future:
+
     Map params = <String, dynamic>{
       "handlePermissions": true,
       "executeAfterPermissionGranted": true,
     };
-    Iterable<Map> songs = await _channel.invokeMethod('getSongs', params);
-    return songs.map((m) => new Song.fromMap(m));
+    List<dynamic> songs = await _channel.invokeMethod('getSongs', params);
+    print(songs.runtimeType);
+    var mySongs = songs.map((m) => new Song.fromMap(m)).toList();
+    completer.complete(mySongs);
+    return completer.future;
   }
 
   Future platformCallHandler(MethodCall call) async {

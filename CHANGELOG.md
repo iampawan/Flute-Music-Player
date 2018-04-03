@@ -1,3 +1,7 @@
+## [0.0.6] - Release
+
+* Future<Iterable<Song>> Bug Fixed.
+
 ## [0.0.5] - Release
 
 * run bug fixed due to change off spelling word permission's' in new flutter version.

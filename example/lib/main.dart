@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:flute_music_player/flute_music_player.dart';
+import 'package:flutter/material.dart';
 
 typedef void OnError(Exception exception);
 const kUrl = "Any Url Here !";
@@ -44,8 +45,14 @@ class _AudioAppState extends State<AudioApp> {
 
   Future initAudioPlayer() async {
     audioPlayer = new MusicFinder();
-    var songs = await MusicFinder.allSongs();
+    var songs;
+    try {
+      songs = await MusicFinder.allSongs();
+    } catch (e) {
+      print(e.toString());
+    }
 
+    print(songs);
     audioPlayer.setDurationHandler((d) => setState(() {
           duration = d;
         }));
