@@ -148,11 +148,10 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
     MusicFinder mf = new MusicFinder(activity.getContentResolver());
 
     // Scan all files under Music folder in external storage directory
-    scanMusicFiles(Environment.getExternalStorageDirectory().listFiles());
+    scanMusicFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).listFiles());
 
     mf.prepare();
     List<MusicFinder.Song> allsongs = mf.getAllSongs();
-    System.out.print(allsongs);
     ArrayList<HashMap> songsMap = new ArrayList<>();
     for (MusicFinder.Song s : allsongs) {
       songsMap.add(s.toMap());
