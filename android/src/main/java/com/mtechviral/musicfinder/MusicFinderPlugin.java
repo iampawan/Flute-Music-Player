@@ -4,15 +4,18 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Process;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,8 +133,24 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
     }
   }
 
+  private void scanMusicFiles(File[] files) {
+    for (File file: files) {
+      if (file.isDirectory())  {
+        scanMusicFiles(file.listFiles());
+      } else {
+        System.out.printf("scanning: %s\n", file.getAbsolutePath());
+        activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://"
+                + file.getAbsolutePath())));
+      }
+    }
+  }
+
   ArrayList<HashMap> getData() {
     MusicFinder mf = new MusicFinder(activity.getContentResolver());
+
+    // Scan all files under Music folder in external storage directory
+    scanMusicFiles(Environment.getExternalStorageDirectory().listFiles());
+
     mf.prepare();
     List<MusicFinder.Song> allsongs = mf.getAllSongs();
     System.out.print(allsongs);
