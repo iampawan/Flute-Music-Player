@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -21,12 +22,22 @@ public class MusicFinder {
     private ContentResolver mContentResolver;
     private List<Song> mSongs = new ArrayList<>();
     private Random mRandom = new Random();
+    private HashMap<Long, String> mAlbumMap = new HashMap<>();
+    private HashMap<Long, String> mAudioPath= new HashMap<>();
 
     public MusicFinder(ContentResolver cr) {
         mContentResolver = cr;
     }
 
     public void prepare() {
+
+        // load all album art
+        loadAlbumArt();
+
+        // query all audio path
+        loadAudioPath();
+
+        // query all music audio
         Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
         Cursor cur = mContentResolver.query(uri, null,
@@ -53,9 +64,45 @@ public class MusicFinder {
                     cur.getString(titleColumn),
                     cur.getString(albumColumn),
                     cur.getLong(durationColumn),
-                    cur.getLong(albumArtColumn)));
+                    mAudioPath.get(cur.getLong(idColumn)),
+                    mAlbumMap.get(cur.getLong(albumArtColumn))));
         } while (cur.moveToNext());
 
+    }
+
+    private void loadAlbumArt() {
+        Cursor cursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                new String[] {MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                System.out.printf("id: %d, path: %s\n", id, path);
+                mAlbumMap.put(id, path);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+
+    private void loadAudioPath() {
+        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA},
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                mAudioPath.put(id, path);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 
     public ContentResolver getContentResolver() {
@@ -91,7 +138,16 @@ public class MusicFinder {
             this.albumId = albumId;
             this.uri = getURI();
             this.albumArt = getAlbumArt();
+        }
 
+        public Song(long id, String artist, String title, String album, long duration, String uri, String albumArt) {
+            this.id = id;
+            this.artist = artist;
+            this.title = title;
+            this.album = album;
+            this.duration = duration;
+            this.uri = uri;
+            this.albumArt = albumArt;
         }
 
         public long getId() {
