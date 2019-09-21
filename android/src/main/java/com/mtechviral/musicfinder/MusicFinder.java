@@ -81,7 +81,6 @@ public class MusicFinder {
             do {
                 long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
                 String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                System.out.printf("id: %d, path: %s\n", id, path);
                 mAlbumMap.put(id, path);
             } while (cursor.moveToNext());
         }
