@@ -138,7 +138,6 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
       if (file.isDirectory())  {
         scanMusicFiles(file.listFiles());
       } else {
-        System.out.printf("scanning: %s\n", file.getAbsolutePath());
         activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://"
                 + file.getAbsolutePath())));
       }
