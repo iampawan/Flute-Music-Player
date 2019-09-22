@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import java.util.ArrayList;
@@ -57,15 +58,19 @@ public class MusicFinder {
         int durationColumn = cur.getColumnIndex(MediaStore.Audio.Media.DURATION);
         int idColumn = cur.getColumnIndex(MediaStore.Audio.Media._ID);
 
+        String musicDirPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
         do {
-            mSongs.add(new Song(
+            Song song = new Song(
                     cur.getLong(idColumn),
                     cur.getString(artistColumn),
                     cur.getString(titleColumn),
                     cur.getString(albumColumn),
                     cur.getLong(durationColumn),
                     mAudioPath.get(cur.getLong(idColumn)),
-                    mAlbumMap.get(cur.getLong(albumArtColumn))));
+                    mAlbumMap.get(cur.getLong(albumArtColumn)));
+            if (song.uri.startsWith(musicDirPath)) {
+                mSongs.add(song);
+            }
         } while (cur.moveToNext());
 
     }
