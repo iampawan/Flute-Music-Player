@@ -57,9 +57,15 @@ public class MusicFinder {
         int albumArtColumn = cur.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
         int durationColumn = cur.getColumnIndex(MediaStore.Audio.Media.DURATION);
         int idColumn = cur.getColumnIndex(MediaStore.Audio.Media._ID);
+        int trackIdColumn = cur.getColumnIndex(MediaStore.Audio.Media.TRACK);
 
         String musicDirPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
         do {
+            String trackIdStr = cur.getString(trackIdColumn);
+            int trackId = 0;
+            if (!trackIdStr.isEmpty())  {
+                trackId = Integer.parseInt(trackIdStr);
+            }
             Song song = new Song(
                     cur.getLong(idColumn),
                     cur.getString(artistColumn),
@@ -67,7 +73,8 @@ public class MusicFinder {
                     cur.getString(albumColumn),
                     cur.getLong(durationColumn),
                     mAudioPath.get(cur.getLong(idColumn)),
-                    mAlbumMap.get(cur.getLong(albumArtColumn)));
+                    mAlbumMap.get(cur.getLong(albumArtColumn)),
+                    trackId);
             if (song.uri.startsWith(musicDirPath)) {
                 mSongs.add(song);
             }
@@ -131,9 +138,10 @@ public class MusicFinder {
         long duration;
         String uri;
         String albumArt;
+        long trackId;
 
 
-        public Song(long id, String artist, String title, String album, long duration, long albumId) {
+        public Song(long id, String artist, String title, String album, long duration, long albumId, long trackId) {
             this.id = id;
             this.artist = artist;
             this.title = title;
@@ -142,9 +150,10 @@ public class MusicFinder {
             this.albumId = albumId;
             this.uri = getURI();
             this.albumArt = getAlbumArt();
+            this.trackId = trackId;
         }
 
-        public Song(long id, String artist, String title, String album, long duration, String uri, String albumArt) {
+        public Song(long id, String artist, String title, String album, long duration, String uri, String albumArt, long trackId) {
             this.id = id;
             this.artist = artist;
             this.title = title;
@@ -152,6 +161,7 @@ public class MusicFinder {
             this.duration = duration;
             this.uri = uri;
             this.albumArt = albumArt;
+            this.trackId = trackId;
         }
 
         public long getId() {
@@ -177,6 +187,8 @@ public class MusicFinder {
         public long getAlbumId() {
             return albumId;
         }
+
+        public long getTrackId() {return trackId; }
 
         public String getURI() {
 
@@ -235,6 +247,7 @@ public class MusicFinder {
             songsMap.put("duration", duration);
             songsMap.put("uri",uri);
             songsMap.put("albumArt",albumArt);
+            songsMap.put("trackId", trackId);
 
 
             return songsMap;
