@@ -7,27 +7,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Process;
-import android.util.Log;
+
+import com.avirias.audiofocus.AudioFocusPlayer;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function3;
 
 /**
  * MusicFinderPlugin
@@ -48,7 +50,8 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
 
   final Handler handler = new Handler();
 
-  MediaPlayer mediaPlayer;
+  AudioFocusPlayer audioFocusPlayer;
+
 
   /**
    * Plugin registration.
@@ -73,57 +76,57 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
 
   @Override
   public void onMethodCall(MethodCall call, Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
-    } else if (call.method.equals("getSongs")) {
-      pendingResult = result;
-      if (!(call.arguments instanceof Map)) {
-        throw new IllegalArgumentException("Plugin not passing a map as parameter: " + call.arguments);
-      }
-      arguments = (Map<String, Object>) call.arguments;
-      boolean handlePermission = (boolean) arguments.get("handlePermissions");
-      this.executeAfterPermissionGranted = (boolean) arguments.get("executeAfterPermissionGranted");
-      checkPermission(handlePermission);
-      // result.success(getData());
+    switch (call.method) {
+      case "getPlatformVersion":
+        result.success("Android " + Build.VERSION.RELEASE);
+        break;
+      case "getSongs":
+        pendingResult = result;
+        if (!(call.arguments instanceof Map)) {
+          throw new IllegalArgumentException("Plugin not passing a map as parameter: " + call.arguments);
+        }
+        arguments = (Map<String, Object>) call.arguments;
+        boolean handlePermission = (boolean) arguments.get("handlePermissions");
+        this.executeAfterPermissionGranted = (boolean) arguments.get("executeAfterPermissionGranted");
+        checkPermission(handlePermission);
+        // result.success(getData());
 
-    } else if (call.method.equals("play")) {
-      String url = ((HashMap) call.arguments()).get("url").toString();
-      Boolean resPlay = play(url);
-      result.success(1);
-    } else if (call.method.equals("pause")) {
-      pause();
-      result.success(1);
-    } else if (call.method.equals("stop")) {
-      stop();
-      result.success(1);
-    } else if (call.method.equals("seek")) {
-      double position = call.arguments();
-      seek(position);
-      result.success(1);
-    } else if (call.method.equals("mute")) {
-      Boolean muted = call.arguments();
-      mute(muted);
-      result.success(1);
-    } else {
-      result.notImplemented();
+        break;
+      case "play":
+        String url = ((HashMap) call.arguments()).get("url").toString();
+        Boolean resPlay = play(url);
+        result.success(1);
+        break;
+      case "pause":
+        pause();
+        result.success(1);
+        break;
+      case "stop":
+        stop();
+        result.success(1);
+        break;
+      case "seek":
+        double position = call.arguments();
+        seek(position);
+        result.success(1);
+        break;
+      case "mute":
+        Boolean muted = call.arguments();
+        mute(muted);
+        result.success(1);
+        break;
+      default:
+        result.notImplemented();
+        break;
     }
   }
 
   private void checkPermission(boolean handlePermission) {
-    if (checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-      if (shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-        // TODO: user should be explained why the app needs the permission
-        if (handlePermission) {
-          requestPermissions();
-        } else {
-          setNoPermissionsError();
-        }
+    if (checkSelfPermission(activity) != PackageManager.PERMISSION_GRANTED) {
+      if (handlePermission) {
+        requestPermissions();
       } else {
-        if (handlePermission) {
-          requestPermissions();
-        } else {
-          setNoPermissionsError();
-        }
+        setNoPermissionsError();
       }
 
     } else {
@@ -172,11 +175,11 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
     return false;
   }
 
-  private int checkSelfPermission(Context context, String permission) {
-    if (permission == null) {
+  private int checkSelfPermission(Context context) {
+    if (Manifest.permission.READ_EXTERNAL_STORAGE == null) {
       throw new IllegalArgumentException("permission is null");
     }
-    return context.checkPermission(permission, android.os.Process.myPid(), Process.myUid());
+    return context.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, android.os.Process.myPid(), Process.myUid());
   }
 
   @Override
@@ -220,64 +223,46 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
   }
 
   private void seek(double position) {
-    mediaPlayer.seekTo((int) (position * 1000));
+    audioFocusPlayer.seekTo((int) (position * 1000));
   }
 
   private void stop() {
     handler.removeCallbacks(sendData);
-    if (mediaPlayer != null) {
-      mediaPlayer.stop();
-      mediaPlayer.release();
-      mediaPlayer = null;
+    if (audioFocusPlayer != null) {
+      audioFocusPlayer.stop();
+      audioFocusPlayer.destroy();
     }
   }
 
   private void pause() {
-    mediaPlayer.pause();
+    audioFocusPlayer.pause();
     handler.removeCallbacks(sendData);
   }
 
   private Boolean play(String url) {
-    if (mediaPlayer == null) {
-      mediaPlayer = new MediaPlayer();
-      mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-      try {
-        mediaPlayer.setDataSource(url);
-      } catch (IOException e) {
-        e.printStackTrace();
-        Log.d("AUDIO", "invalid DataSource");
-      }
-
-      mediaPlayer.prepareAsync();
+    if (audioFocusPlayer == null) {
+      audioFocusPlayer = new AudioFocusPlayer(activity);
+          audioFocusPlayer.setDataSource(Uri.fromFile(new File(url)));
     } else {
-      channel.invokeMethod("audio.onDuration", mediaPlayer.getDuration());
+      channel.invokeMethod("audio.onDuration", audioFocusPlayer.getDuration());
 
-      mediaPlayer.start();
+      audioFocusPlayer.play();
       channel.invokeMethod("audio.onStart", true);
     }
 
-    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+    audioFocusPlayer.onComplete(new Function1<AudioFocusPlayer, Unit>() {
       @Override
-      public void onPrepared(MediaPlayer mp) {
-        channel.invokeMethod("audio.onDuration", mediaPlayer.getDuration());
-
-        mediaPlayer.start();
-        channel.invokeMethod("audio.onStart", true);
-      }
-    });
-
-    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-      @Override
-      public void onCompletion(MediaPlayer mp) {
+      public Unit invoke(AudioFocusPlayer audioFocusPlayer) {
         stop();
         channel.invokeMethod("audio.onComplete", true);
+        return Unit.INSTANCE;
       }
     });
 
-    mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+    audioFocusPlayer.onError(new Function3<AudioFocusPlayer, Integer, Integer, Boolean>() {
       @Override
-      public boolean onError(MediaPlayer mp, int what, int extra) {
-        channel.invokeMethod("audio.onError", String.format("{\"what\":%d,\"extra\":%d}", what, extra));
+      public Boolean invoke(AudioFocusPlayer audioFocusPlayer, Integer integer, Integer integer2) {
+        channel.invokeMethod("audio.onError", String.format("{\"what\":%d,\"extra\":%d}", integer, integer2));
         return true;
       }
     });
@@ -290,10 +275,10 @@ public class MusicFinderPlugin implements MethodCallHandler, PluginRegistry.Requ
   private final Runnable sendData = new Runnable() {
     public void run() {
       try {
-        if (!mediaPlayer.isPlaying()) {
+        if (!audioFocusPlayer.isPlaying()) {
           handler.removeCallbacks(sendData);
         }
-        int time = mediaPlayer.getCurrentPosition();
+        int time = audioFocusPlayer.getCurrentPosition();
         channel.invokeMethod("audio.onCurrentPosition", time);
 
         handler.postDelayed(this, 200);
